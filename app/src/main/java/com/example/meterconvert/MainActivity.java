@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 String kilometersInputText = editTextKilometers.getText().toString();
                 String milesInputText = editTextMiles.getText().toString();
 
-
+        //aim to refactor code - perhaps to switch?
                 if (!inchesInputText.isEmpty()) {
                     try {
                         Integer.parseInt(inchesInputText);
