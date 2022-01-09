@@ -10,6 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextMiles;
     private Button buttonToMeters;
     private TextView resultText;
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private String validate() {
+        EditText[] values = new EditText[]{
+                editTextInches,
+                editTextCentimeters,
+                editTextFeet,
+                editTextYards,
+                editTextKilometers,
+                editTextMiles
+        };
+
+        for (EditText editTextValue : values) {
+            boolean output = checkTextInput(editTextValue);
+            if (output == false) {
+                    //clear all the fields
+                    Toast.makeText(MainActivity.this, "Too many values added to input", Toast.LENGTH_SHORT).show();
+                    editTextValue.getText().clear();
+            }
+        }
+        return "Valid";
+    }
+
+
+
     private void calculateMetersButtonClickListener() {
         buttonToMeters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,12 +84,15 @@ public class MainActivity extends AppCompatActivity {
                 String kilometersInputText = editTextKilometers.getText().toString();
                 String milesInputText = editTextMiles.getText().toString();
 
-        //aim to refactor code - perhaps to switch?
+                validate();
+
+                //aim to refactor code - perhaps to switch?
                 if (!inchesInputText.isEmpty()) {
                     try {
                         Integer.parseInt(inchesInputText);
                         double metersResult = calculateInchesToMeters(inchesInputText);
                         displayMetersResult(metersResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -69,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(centimetersInputText);
                         double metersResult = calculateCentimetersToMeters(centimetersInputText);
                         displayMetersResult(metersResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -77,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(feetInputText);
                         double metersResult = calculateFeetToMeters(feetInputText);
                         displayMetersResult(metersResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -85,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(yardsInputText);
                         double metersResult = calculateYardsToMeters(yardsInputText);
                         displayMetersResult(metersResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -93,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(kilometersInputText);
                         double metersResult = calculateKilometersToMeters(kilometersInputText);
                         displayMetersResult(metersResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -101,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(milesInputText);
                         double meterResult = calculateMilesToMeters(milesInputText);
                         displayMetersResult(meterResult);
+                        count = 0;
                     } catch (NumberFormatException e) {
                         errorMessage();
                     }
@@ -108,7 +145,23 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please enter measurements to convert", Toast.LENGTH_LONG).show();
                 }
             }
+
         });
+    }
+
+
+    private boolean checkTextInput(EditText input) {
+
+        String inputValue = input.getText().toString();
+
+        if (inputValue.length() > 0) {
+            count++;
+            if (count > 1) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
 
@@ -146,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         double meters = kilometers * 1000.00;
         return meters;
     }
+
     private double calculateMilesToMeters(String milesInputText) {
 
         int miles = Integer.parseInt(milesInputText);
@@ -160,11 +214,10 @@ public class MainActivity extends AppCompatActivity {
 
         String metersTextResult = meterDecimalFormat.format(meters);
         String metersResult = metersTextResult + " meters";
-
         resultText.setText(metersResult);
     }
 
-    private void errorMessage(){
+    private void errorMessage() {
         Toast.makeText(MainActivity.this, "The input is invalid", Toast.LENGTH_SHORT).show();
     }
 
